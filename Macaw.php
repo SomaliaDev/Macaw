@@ -1,8 +1,9 @@
 <?php
 
 namespace NoahBuscher\Macaw;
-
+//命名空间可以随意修改,根据项目而定~>当然建议使用原名推广版权
 /**
+ * 以下静态方法是该类中包含的所有方法,均可根据需求来使用
  * @method static Macaw get(string $route, Callable $callback)
  * @method static Macaw post(string $route, Callable $callback)
  * @method static Macaw put(string $route, Callable $callback)
@@ -23,7 +24,9 @@ class Macaw {
   public static $error_callback;
 
   /**
-   * Defines a route w/ callback and method
+   * 初始化路由
+   * @param $method
+   * @param $params
    */
   public static function __callstatic($method, $params) {
     $uri = dirname($_SERVER['PHP_SELF']).'/'.$params[0];
@@ -35,18 +38,23 @@ class Macaw {
   }
 
   /**
-   * Defines callback if route is not found
-  */
+   * 未找到路由
+   * @param $callback
+   */
   public static function error($callback) {
     self::$error_callback = $callback;
   }
 
+  /**
+   * 停止匹配路由
+   * @param bool $flag
+   */
   public static function haltOnMatch($flag = true) {
     self::$halts = $flag;
   }
 
   /**
-   * Runs the callback for the given request
+   * 请求时调用回调函数
    */
   public static function dispatch(){
     $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -63,31 +71,31 @@ class Macaw {
     if (in_array($uri, self::$routes)) {
       $route_pos = array_keys(self::$routes, $uri);
       foreach ($route_pos as $route) {
-        // Using an ANY option to match both GET and POST requests
+        // 判断是否使用ANY任意匹配请求
         if (self::$methods[$route] == $method || self::$methods[$route] == 'ANY') {
           $found_route = true;
 
-          // If route is not an object
+          // 如果路由不是一个对象
           if (!is_object(self::$callbacks[$route])) {
 
-            // Grab all parts based on a / separator
+            // 使用分隔符拆分开来
             $parts = explode('/',self::$callbacks[$route]);
 
-            // Collect the last index of the array
+            // 获取数组最后一个索引
             $last = end($parts);
 
-            // Grab the controller name and method call
+            // 获取定义控制器的名称与方法名称
             $segments = explode('@',$last);
 
-            // Instanitate controller
+            // 实例化控制器
             $controller = new $segments[0]();
 
-            // Call method
+            // 动态调用方法
             $controller->{$segments[1]}();
 
             if (self::$halts) return;
           } else {
-            // Call closure
+            // 使用闭包
             call_user_func(self::$callbacks[$route]);
 
             if (self::$halts) return;
@@ -106,24 +114,24 @@ class Macaw {
           if (self::$methods[$pos] == $method || self::$methods[$pos] == 'ANY') {
             $found_route = true;
 
-            // Remove $matched[0] as [1] is the first parameter.
+            // 删掉正则表达式所匹配到的内容
             array_shift($matched);
 
             if (!is_object(self::$callbacks[$pos])) {
 
-              // Grab all parts based on a / separator
+              // 使用 / 分割
               $parts = explode('/',self::$callbacks[$pos]);
 
-              // Collect the last index of the array
+              // 获取数组最后一个索引
               $last = end($parts);
 
-              // Grab the controller name and method call
+              // 获取定义控制器的名称与方法名称
               $segments = explode('@',$last);
 
-              // Instanitate controller
+              // 实例化控制器
               $controller = new $segments[0]();
 
-              // Fix multi parameters
+              // 验证参数是否正确
               if(!method_exists($controller, $segments[1])) {
                 echo "controller and action not found";
               } else {
@@ -142,7 +150,7 @@ class Macaw {
       }
     }
 
-    // Run the error callback if the route was not found
+    // 当路由没有找到时
     if ($found_route == false) {
       if (!self::$error_callback) {
         self::$error_callback = function() {
