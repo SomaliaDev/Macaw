@@ -1,11 +1,11 @@
 Macaw
 =====
 
-Macaw is a simple, open source PHP router. It's super small (~150 LOC), fast, and has some great annotated source code. This class allows you to just throw it into your project and start using it immediately.
 
-### Install
+### 安装
 
-If you have Composer, just include Macaw as a project dependency in your `composer.json`. If you don't just install it by downloading the .ZIP file and extracting it to your project directory.
+使用Composer加载到自己的项目里
+或者下载Zip包解压到自己的项目里
 
 ```
 require: {
@@ -13,15 +13,16 @@ require: {
 }
 ```
 
-### Examples
+### 例子
 
-First, `use` the Macaw namespace:
+首先需要引入Macaw的命名空间
 
 ```PHP
 use \NoahBuscher\Macaw\Macaw;
 ```
 
-Macaw is not an object, so you can just make direct operations to the class. Here's the Hello World:
+Macaw 并非一个实例化的对象
+再你引入命名空间后可以直接通过静态方式调用:
 
 ```PHP
 Macaw::get('/', function() {
@@ -31,7 +32,7 @@ Macaw::get('/', function() {
 Macaw::dispatch();
 ```
 
-Macaw also supports lambda URIs, such as:
+支持调用匿名函数:
 
 ```PHP
 Macaw::get('/(:any)', function($slug) {
@@ -41,7 +42,7 @@ Macaw::get('/(:any)', function($slug) {
 Macaw::dispatch();
 ```
 
-You can also make requests for HTTP methods in Macaw, so you could also do:
+支持多种http请求的方法:
 
 ```PHP
 Macaw::get('/', function() {
@@ -55,7 +56,7 @@ Macaw::post('/', function() {
 Macaw::dispatch();
 ```
 
-Lastly, if there is no route defined for a certain location, you can make Macaw run a custom callback, like:
+如果没有定义路由, 那么Macaw会调用回调函数:
 
 ```PHP
 Macaw::error(function() {
@@ -63,8 +64,8 @@ Macaw::error(function() {
 });
 ```
 
-If you don't specify an error callback, Macaw will just echo `404`.
+如果不指定一个错误就会运行回调函数中的404错误
 
 <hr>
 
-In order to let the server know the URI does not point to a real file, you may need to use one of the example [configuration files](https://github.com/noahbuscher/Macaw/blob/master/config).
+例子(https://github.com/noahbuscher/Macaw/blob/master/config).

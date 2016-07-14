@@ -1,4 +1,5 @@
 The MIT License (MIT)
+基于MIT开源协议
 
 Copyright (c) 2015 Noah Buscher
 
